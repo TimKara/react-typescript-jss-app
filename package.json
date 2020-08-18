@@ -9,6 +9,7 @@
       "jss-main"
     ],
     "sitecoreDistPath": "/dist/react-typescript-jss-app",
+    "sitecoreConfigPath": "/App_Config/Include/zzz",
     "graphQLEndpointPath": "/api/react-typescript-jss-app",
     "language": "en",
     "azureAppInsightsKey": "appinsightskey-not-set"
