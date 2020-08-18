@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "es6",
+      "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true,
+      "sourceMap": true,
+      "outDir": "dist",
+      "baseUrl": ".",
+      "noImplicitAny": false,
+      "jsx": "react",
+      "resolveJsonModule": true,
+      "paths": {
+          "*": [
+              "../node_modules/*",
+              "../src/types/*"
+          ]
+      }
+  },
+  "include": [
+      "."
+  ],
+  "typeRoots": [
+    "../src/types",
+    "../node_modules/@types"
+  ], 
+  "types": [
+    "node",
+    "react-app-env"
+  ]
+}
