@@ -12,12 +12,12 @@ const StyleguideLayout:React.FC<any> = (props) => {
   const sections = getChildPlaceholder(props.rendering, 'jss-styleguide-layout')
     .filter((section) => getFieldValue(section as any, 'heading'))
     .map((section: any) => ({
-      heading: getFieldValue(section as any, 'heading'),
+      heading: getFieldValue(section as any, 'heading') as any,
       id: `i${section.uid.replace(/[{}]/g, '')}`,
       children: getChildPlaceholder(section as any, 'jss-styleguide-section')
         .filter((component) => getFieldValue(component as any, 'heading'))
         .map((component: any) => ({
-          heading: getFieldValue(component as any, 'heading'),
+          heading: getFieldValue(component as any, 'heading') as any,
           id: `i${component.uid.replace(/[{}]/g, '')}`,
         })),
     }))

@@ -20,7 +20,7 @@ class GridColumnsComponent extends React.Component<GridColumnsProps> {
             className: 'm-grid'
         };
     }
-    
+
     public render(): JSX.Element {
         const { smallColumns, largeColumns, extraLargeColumns, parameters, rendering } = this.props;
         if (parameters && (parameters.className !== undefined)) {
@@ -28,12 +28,12 @@ class GridColumnsComponent extends React.Component<GridColumnsProps> {
                 className: parameters.className.concat(' m-grid')
             });
         }
-        const columnsString = getFieldValue(this.props.fields as any, 'columns');
+        const columnsString = getFieldValue(this.props.fields as any, 'columns') as string;
         const columns = columnsString.indexOf(',') > -1 ? columnsString.split(',') : ['12'];
 
         return (
             <div className="m-grid">
-                {columns && columns.map((column: number, index: number) => {
+                {columns && columns.map((column: string, index: number) => {
                     const GridColumnClassName = joinClasses(
                         `m-grid__M${column}`,
                         (smallColumns !== undefined && smallColumns[index])
@@ -57,7 +57,7 @@ class GridColumnsComponent extends React.Component<GridColumnsProps> {
     }
 }
 
-const gridColumnsComponentWithPlaceholderInjected = withPlaceholder([
+const gridColumnsComponentWithPlaceholderInjected : any = withPlaceholder([
     {
         placeholder: 'jss-grid-column-1',
         prop: 'placeholder1',

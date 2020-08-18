@@ -19,7 +19,7 @@ class MarkdownViewer extends React.Component<MarkdownViewerProps, MarkdownViewer
         super(props);
         const body = getFieldValue(props.fields, 'body');
         if (body) {
-            this.state = { text: body };
+            this.state = { text: body as string };
         } else if (getFieldValue(props.fields, 'url')) {
             this.state = { text: 'Text is loading' };
         } else {
@@ -30,7 +30,7 @@ class MarkdownViewer extends React.Component<MarkdownViewerProps, MarkdownViewer
     public componentDidMount(): void {
         const url = getFieldValue(this.props.fields, 'url');
         if (url) {
-            fetch(url, { cache: 'reload' }) // don't cache
+            fetch(url as Request, { cache: 'reload' }) // don't cache
                 .then(response => response.text())
                 .then(text => this.setState({ text }));
         }
@@ -38,11 +38,11 @@ class MarkdownViewer extends React.Component<MarkdownViewerProps, MarkdownViewer
 
     public render(): JSX.Element {
         const { text } = this.state;
-        const url = getFieldValue(this.props.fields, 'url');
+        const url = getFieldValue(this.props.fields, 'url') as string;
 
         const imgBaseUrl = url ? url.substring(0, url.lastIndexOf('/')) : './';
         return (
-            <Markdown body={text} imgBaseUrl={imgBaseUrl}/>         
+            <Markdown body={text} imgBaseUrl={imgBaseUrl}/>
         );
     }
 }

@@ -20,7 +20,7 @@ export interface AppWindow extends Window {
 }
 
 export function getGlobalData(): GlobalData {
-    return (window as AppWindow).app;
+    return (window as any as AppWindow).app;
 }
 
 /*

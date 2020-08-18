@@ -81,10 +81,10 @@ class StyleguideLayoutTabs extends React.Component<StyleguideLayoutTabsProps, St
       </StyleguideSpecimen>
     );
   }
-  
+
   private setActiveTab(index: number): void {
     this.setState({ activeTabIndex: index });
-  }  
+  }
 }
 
 // This is a _higher order component_ that will wrap our component and inject placeholder
@@ -92,7 +92,7 @@ class StyleguideLayoutTabs extends React.Component<StyleguideLayoutTabsProps, St
 // this another option compared to using the <Placeholder> component;
 // in this case, chosen because we primarily need access to the _data_
 // of the placeholder.
-const tabsComponentWithPlaceholderInjected = withPlaceholder({
+const tabsComponentWithPlaceholderInjected : any = withPlaceholder({
   placeholder: 'jss-tabs',
   prop: 'tabsPlaceholder',
 })(StyleguideLayoutTabs);
