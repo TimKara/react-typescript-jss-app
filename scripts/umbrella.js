@@ -13,18 +13,18 @@ const crypto = require('crypto');
 const nodePlop = require('node-plop');
 
 const CommonFieldTypes = {
-    SingleLineText: "Single-Line Text",
-    MultiLineText: "Multi-Line Text",
-    RichText: "Rich Text",
-    ContentList: "Treelist",
-    ItemLink: "Droptree",
-    GeneralLink: "General Link",
+    "Single-Line Text": "SingleLineText",
+    "Multi-Line Text": "MultiLineText",
+    "Rich Text": "RichText",
+    Treelist: "ContentList",
+    Droptree: "ItemLink",
+    "General Link": "GeneralLink",
     Image: "Image",
     File: "File",
     Number: "Number",
     Checkbox: "Checkbox",
     Date: "Date",
-    DateTime: "Datetime"
+    Datetime: "DateTime"
 }
 
 var progressBar, progress = 0;
@@ -111,7 +111,7 @@ const getRouteNames = (route) => {
 }
 const saveFile = (e) => {
     let base64File = e.base64.split(';base64,').pop();
-    let dataPath = './data';
+    let dataPath = '../../../data';
     let mediaPath = `${e.mediaPath.split('/data/').pop()}.${e.extension}`;
     const outputFilePath = path.join(
         process.cwd(),
@@ -287,8 +287,11 @@ const processComponentManifests = (e) => {
     getMetaData().then(data => {
         if (data) {
             console.log(chalk `{blue Processing metadata for} {yellowBright components}`);
+            console.log("Renderings/Components size: ", data.renderings["length"]);
             for (component of data.renderings) {
-                scaffoldComponentManifest(component);
+                let template = data.templates[data.templates.findIndex(x => x["Name"] === component["name"])]
+                console.log(`\tT: ${template ? template["Name"] : "N/A"} | C: ${component["name"]}`);
+                scaffoldComponentManifest(component, template);
             }
             if (dryrun) {
                 console.log(chalk `{magentaBright Dry run enabled. File(s) not saved. }`)
@@ -331,7 +334,7 @@ function scaffoldTemplateManifest(template) {
         icon: icon,
         fields: fields,
         inherits: inherits
-    }).then(function (results) {        
+    }).then(function (results) {
     });
 }
 
@@ -351,19 +354,26 @@ function scaffoldPlaceholdersManifest(placeholders) {
     });
 }
 
-function scaffoldComponentManifest(component) {
+function scaffoldComponentManifest(component, template) {
     let fields = ``;
     let placeholders = '';
 
-    if (!component || !component.fields) {
+    if (!component) {
         return '';
     }
-    for (field of component.fields) {
-        fields += `\t\t\t{ id: "${field.id}", name: "${field.name}", type: ${field.type} },\n`;
+    if (!template || !template.fields) {
+        console.log("\t\tFields size: ", 0);
+    } else {
+        console.log("\t\tFields size: ", template.fields["length"]);
+        for (field of template.fields) {
+            console.log(`\t\t\t{ name: "${field.name}", type: ${field.type}", type: CommonFieldTypes.${CommonFieldTypes[field.type]} }`)
+            fields += `\t\t\t{ name: "${field.name}", type: CommonFieldTypes.${CommonFieldTypes[field.type]} },\n`;
+        }
     }
-
+    console.log("\t\tPlaceholders size: ", component.placeholders["length"]);
     for (placeholder of component.placeholders) {
-        placeholders += `\t\t\t"${placeholder.split('|')[0]}", // ${placeholder.split('|')[1]} \n`;
+        console.log(`\t\t\t{ placeholder: "${placeholder.split('|')[1]}", // ${placeholder.split('|')[0]} }`)
+        placeholders += `\t\t\t"${placeholder.split('|')[1]}", // ${placeholder.split('|')[0]} \n`;
     }
     // run all the generator actions using the data specified
     getUmbrella(extension, 'component').runActions({
@@ -396,11 +406,11 @@ function sync() {
         if (!countDown) {
             setTimeout(function () {
                 term('\n');
-                
-                dryrun ? 
-                console.log(chalk `{magentaBright Dry run. Skipped saving files. }`) : 
+
+                dryrun ?
+                console.log(chalk `{magentaBright Dry run. Skipped saving files. }`) :
                 console.log(chalk `{blue Ready processing content. }`);
-                process.exit();                
+                process.exit();
             }, 200);
         }
     }
@@ -444,7 +454,7 @@ function sync() {
                     data.fields = processFields(body.sitecore.route.fields);
                     data.placeholders = processPlaceHolders(body.sitecore.route.placeholders);
                     if (!dryrun) {
-                        yaml.sync(`./data/routes${currentRoute}/${body.sitecore.route.itemLanguage}.yml`, data);
+                        yaml.sync(`../../../data/routes${currentRoute}/${body.sitecore.route.itemLanguage}.yml`, data);
                     }
                 } else {
                     console.log(chalk `{red No route found for ${currentRoute}.}`);
@@ -470,22 +480,22 @@ prog
     .version('1.0.0')
     .description('Umbrella for Sitecore JSS')
     .help(`
-        __.|.__ 
-    .n887.d8'qb'""-. 
-  .d88' .888  q8b. '. 
- d8P'  .8888   .88b. \\                                                                                             
-d88_._ d8888_.._9888 _\\                                                                                            
-  '   '    |    '   '    ____  ____  ___      ___  _______    _______    _______  ___      ___            __       
-           |            (""  _||_ ""||"" \\    /"" ||   _  ""\\/""     \\  /""    ""||""|    |"" |         /""""\\      
-           |            |   (  ) : | \\   \\  //   |(. |_)  :)|:        |(: ______)||  |    ||  |         /    \\     
-           |            (:  |  | . ) /\\\\  \\/.    ||:     \\/ |_____/   ) \\/    |  |:  |    |:  |        /' /\\  \\    
-           |             \\\\ \\__/ // |: \\.        |(|  _  \\\\  //      /  // ___)_  \\  |___  \\  |___    //  __'  \\   
-           |             /\\\\ __ //\\ |.  \\    /:  ||: |_)  :)|:  __   \\ (:     ""|( \\_|:  \\( \\_|:  \\  /   /  \\\\  \\  
-         '='            (__________)|___|\\__/|___|(_______/ |__|  \\___) \\_______) \\_______)\\_______)(___/    \\___) 
-      
-     
+        __.|.__
+    .n887.d8'qb'""-.
+  .d88' .888  q8b. '.
+ d8P'  .8888   .88b. \\
+d88_._ d8888_.._9888 _\\
+  '   '    |    '   '    ____  ____  ___      ___  _______    _______    _______  ___      ___            __
+           |            (""  _||_ ""||"" \\    /"" ||   _  ""\\/""     \\  /""    ""||""|    |"" |         /""""\\
+           |            |   (  ) : | \\   \\  //   |(. |_)  :)|:        |(: ______)||  |    ||  |         /    \\
+           |            (:  |  | . ) /\\\\  \\/.    ||:     \\/ |_____/   ) \\/    |  |:  |    |:  |        /' /\\  \\
+           |             \\\\ \\__/ // |: \\.        |(|  _  \\\\  //      /  // ___)_  \\  |___  \\  |___    //  __'  \\
+           |             /\\\\ __ //\\ |.  \\    /:  ||: |_)  :)|:  __   \\ (:     ""|( \\_|:  \\( \\_|:  \\  /   /  \\\\  \\
+         '='            (__________)|___|\\__/|___|(_______/ |__|  \\___) \\_______) \\_______)\\_______)(___/    \\___)
+
+
     Module sync between Sitecore and the developer machine.
-    
+
     WARNING: YOUR LOCAL DATA WILL BE OVERWRITTEN. MOMENTARILY THERE'S NO CHECK FOR EXISTING ITEMS. MAKE SURE YOU HAVE A BACKUP!
 
     `)
@@ -496,7 +506,7 @@ d88_._ d8888_.._9888 _\\
     .option('-m, --manifests', 'Sync all the component manifests from Sitecore', prog.BOOL, false)
     .option('-c, --content', 'Sync all the content from your Sitecore JSS website', prog.BOOL, false)
     .option('-d, --dryrun', 'Sync but do not write to disk', prog.BOOL, false)
-    .option('-x, --typescript', 'Creates manifests in TypeScript', prog.BOOL, false)    
+    .option('-x, --typescript', 'Creates manifests in TypeScript', prog.BOOL, false)
     .action(function (args, options, logger) {
         console.clear();
 
