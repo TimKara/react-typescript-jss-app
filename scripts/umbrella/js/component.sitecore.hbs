@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { CommonFieldTypes, SitecoreIcon, Manifest } from '@sitecore-jss/sitecore-jss-manifest';
+import { CustomFieldTypes } from '../metadata/custom-sitecore-manifest';
 
 /**
  * Adds the Hero component to the disconnected manifest.
@@ -8,7 +9,7 @@ import { CommonFieldTypes, SitecoreIcon, Manifest } from '@sitecore-jss/sitecore
 export default function(manifest) {
   manifest.addComponent({
     name: "{{name}}",
-    icon: "{{icon}}",
+    icon: {{icon}},
     displayName: "{{displayName}}",
     fields: [
 {{fields}}    ],

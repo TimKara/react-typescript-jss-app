@@ -11,21 +11,12 @@ const packageConfig = require('../package.json');
 const prog = require('caporal');
 const crypto = require('crypto');
 const nodePlop = require('node-plop');
+const sitecoreManifest = require('@sitecore-jss/sitecore-jss-manifest')
+const customSitecoreManifest = require('../sitecore/definitions/metadata/custom-sitecore-manifest.js')
 
-const CommonFieldTypes = {
-    "Single-Line Text": "SingleLineText",
-    "Multi-Line Text": "MultiLineText",
-    "Rich Text": "RichText",
-    Treelist: "ContentList",
-    Droptree: "ItemLink",
-    "General Link": "GeneralLink",
-    Image: "Image",
-    File: "File",
-    Number: "Number",
-    Checkbox: "Checkbox",
-    Date: "Date",
-    Datetime: "DateTime"
-}
+const SitecoreIcons = swap(sitecoreManifest.SitecoreIcon);
+const CommonFieldTypes = swap(sitecoreManifest.CommonFieldTypes);
+const CustomFieldTypes = swap(customSitecoreManifest.CustomFieldTypes);
 
 var progressBar, progress = 0;
 var dryrun = false;
@@ -34,6 +25,15 @@ var extension = 'js';
 /*
   FUNCTIONS
 */
+function swap(json)
+{
+    var ret = {};
+    for(var key in json){
+        ret[json[key]] = key;
+    }
+    return ret;
+}
+
 const getUmbrella = (ext, generator) => {
     // load an instance of plop from a plopfile
     var umbrellaScriptDir = path.resolve(__dirname, `umbrella`);
@@ -381,7 +381,7 @@ function scaffoldComponentManifest(component, template) {
         extension: extension,
         id: component.id,
         name: component.name,
-        icon: component.icon,
+        icon: "SitecoreIcon."+SitecoreIcons[component.icon],
         displayName: component.displayName,
         fields: fields,
         placeholders: placeholders
